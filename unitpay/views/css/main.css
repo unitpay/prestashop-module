@@ -11,3 +11,7 @@ p.payment_module a.unitpay:after{
     width: 14px;
     color: #777777;
 }
+
+p.payment_module a.unitpay{
+    background: url(../img/logo.png) 32px 32px no-repeat #fbfbfb;
+}
