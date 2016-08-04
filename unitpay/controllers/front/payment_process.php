@@ -28,8 +28,8 @@ class UnitpayPayment_processModuleFrontController extends ModuleFrontController
         $public_key = Configuration::get('UNIT_PUBLIC_KEY');
         $desc = 'Оплата заказа из магазина ' . Configuration::get('PS_SHOP_NAME');
         $sum = $this->context->cart->getOrderTotal();
-        $order_id = Order::getOrderByCartId($cart->id);
-        $account = $order_id;
+        $id_order = Order::getOrderByCartId($cart->id);
+        $account = $id_order;
 
         Tools::redirect('https://unitpay.ru/pay/' . $public_key . '?sum=' . $sum . '&account=' . $account . '&desc=' . $desc);
 

@@ -25,7 +25,7 @@ class UnitpayCallbackModuleFrontController extends ModuleFrontController
             $params = $_GET['params'];
             $method = $_GET['method'];
             $signature = $params['signature'];
-            
+
             if (empty($signature)){
                 $status_sign = false;
             }else{
@@ -91,7 +91,7 @@ class UnitpayCallbackModuleFrontController extends ModuleFrontController
             $result = array('error' =>
                 array('message' => 'заказа не существует')
             );
-        }elseif ((float)$order->total_products_wt != (float)$params['orderSum']) {
+        }elseif ((float)$order->total_paid != (float)$params['orderSum']) {
             $result = array('error' =>
                 array('message' => 'не совпадает сумма заказа')
             );
@@ -120,7 +120,7 @@ class UnitpayCallbackModuleFrontController extends ModuleFrontController
             $result = array('error' =>
                 array('message' => 'заказа не существует')
             );
-        }elseif ((float)$order->total_products_wt != (float)$params['orderSum']) {
+        }elseif ((float)$order->total_paid != (float)$params['orderSum']) {
             $result = array('error' =>
                 array('message' => 'не совпадает сумма заказа')
             );
