@@ -92,10 +92,18 @@ class UnitpayCallbackModuleFrontController extends ModuleFrontController
                 array('message' => 'заказа не существует')
             );
         }elseif ((float)$order->total_paid != (float)$params['orderSum']) {
+
+            PrestaShopLogger::addLog(date('H:i:s', time()) . '| check method | Не совпадает сумма заказа| сумма в заказе -> '
+                . $order->total_paid . '| сумма в параметрах ->' . $params['orderSum'], 3);
+
             $result = array('error' =>
                 array('message' => 'не совпадает сумма заказа')
             );
         }elseif ($currency->iso_code != $params['orderCurrency']) {
+
+            PrestaShopLogger::addLog(date('H:i:s', time()) . '| check method | Не совпадает валюта заказа| валюта в заказе -> '
+                . $currency->iso_code . '| валюта в параметрах ->' . $params['orderCurrency'], 3);
+
             $result = array('error' =>
                 array('message' => 'не совпадает валюта заказа')
             );
@@ -121,10 +129,18 @@ class UnitpayCallbackModuleFrontController extends ModuleFrontController
                 array('message' => 'заказа не существует')
             );
         }elseif ((float)$order->total_paid != (float)$params['orderSum']) {
+
+            PrestaShopLogger::addLog(date('H:i:s', time()) . '| pay method | Не совпадает сумма заказа| сумма в заказе -> '
+                . $order->total_paid . '| сумма в параметрах ->' . $params['orderSum'], 3);
+
             $result = array('error' =>
                 array('message' => 'не совпадает сумма заказа')
             );
         }elseif ($currency->iso_code != $params['orderCurrency']) {
+
+            PrestaShopLogger::addLog(date('H:i:s', time()) . '| pay method | Не совпадает валюта заказа| валюта в заказе -> '
+                . $currency->iso_code . '| валюта в параметрах ->' . $params['orderCurrency'], 3);
+
             $result = array('error' =>
                 array('message' => 'не совпадает валюта заказа')
             );
@@ -151,7 +167,7 @@ class UnitpayCallbackModuleFrontController extends ModuleFrontController
 
         if (is_null($order->id)){
             $result = array('error' =>
-                array('message' => '1заказа не существует')
+                array('message' => 'заказа не существует')
             );
         }
         else{
