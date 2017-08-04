@@ -31,8 +31,36 @@ class UnitpayPayment_processModuleFrontController extends ModuleFrontController
         $id_order = Order::getOrderByCartId($cart->id);
         $account = $id_order;
 
-        Tools::redirect('https://unitpay.ru/pay/' . $public_key . '?sum=' . $sum . '&account=' . $account . '&desc=' . $desc);
+        Tools::redirect('https://unitpay.ru/pay/' . $public_key . '?' .
+            http_build_query(array(
+                'sum' => $sum,
+                'currency' => $this->context->currency->iso_code,
+                'account' => $account,
+                'desc' => $desc,
+                'customerEmail' => $customer->email,
+                'cashItems' => $this->getCashItems($cart),
+                'signature' => hash('sha256', join('{up}', array(
+                    $account,
+                    $this->context->currency->iso_code,
+                    $desc,
+                    $sum,
+                    Configuration::get('UNIT_SECRET_KEY')
+                )))
+            )));
 
+    }
+
+    private function getCashItems($cart)
+    {
+        return base64_encode(
+            json_encode(
+                array_map(function ($item) {
+                    return array(
+                        'name' => $item['name'],
+                        'count' => $item['quantity'],
+                        'price' => $item['price']
+                    );
+                }, $cart->getProducts())));
     }
 
 }
