@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: aleksey
- * Date: 04.07.16
- * Time: 14:40
- */
 
 class UnitpayCallbackModuleFrontController extends ModuleFrontController
 {
