@@ -25,13 +25,14 @@ class UnitpayPayment_processModuleFrontController extends ModuleFrontController
         $this->module->validateOrder((int)$cart->id, Configuration::get('UNIT_OS_NEEDPAY'), $total, $this->module->displayName, NULL, array(), (int)$currency->id, false, $customer->secure_key);
 
 
+        $domain = Configuration::get('UNIT_DOMAIN');
         $public_key = Configuration::get('UNIT_PUBLIC_KEY');
         $desc = 'Оплата заказа из магазина ' . Configuration::get('PS_SHOP_NAME');
         $sum = $this->context->cart->getOrderTotal();
         $id_order = Order::getOrderByCartId($cart->id);
         $account = $id_order;
 
-        Tools::redirect('https://unitpay.ru/pay/' . $public_key . '?' .
+        Tools::redirect("https://$domain/pay/" . $public_key . '?' .
             http_build_query(array(
                 'sum' => $sum,
                 'currency' => $this->context->currency->iso_code,

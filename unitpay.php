@@ -35,6 +35,7 @@ class Unitpay extends PaymentModule
             !Configuration::updateValue('UNIT_OS_NEEDPAY', 800)||
             !Configuration::updateValue('UNIT_OS_PAYED', 801)||
             !Configuration::updateValue('UNIT_OS_ERROR_PAY', 802)||
+            !Configuration::updateValue('UNIT_DOMAIN', '')||
             !Configuration::updateValue('UNIT_SECRET_KEY', '')||
             !Configuration::updateValue('UNIT_PUBLIC_KEY', '')
         )
@@ -96,6 +97,7 @@ class Unitpay extends PaymentModule
             !Configuration::deleteByName('UNIT_OS_NEEDPAY')||
             !Configuration::deleteByName('UNIT_OS_PAYED')||
             !Configuration::deleteByName('UNIT_OS_ERROR_PAY')||
+            !Configuration::deleteByName('UNIT_DOMAIN')||
             !Configuration::deleteByName('UNIT_SECRET_KEY')||
             !Configuration::deleteByName('UNIT_PUBLIC_KEY')
         )
@@ -110,7 +112,9 @@ class Unitpay extends PaymentModule
     {
         if (Tools::isSubmit('btnSubmit'))
         {
-            if (!Tools::getValue('UNIT_SECRET_KEY'))
+            if (!Tools::getValue('UNIT_DOMAIN'))
+                $this->_postErrors[] = $this->l('Необходимо ввести домен');
+            elseif (!Tools::getValue('UNIT_SECRET_KEY'))
                 $this->_postErrors[] = $this->l('Необходимо ввести SECRET KEY');
             elseif (!Tools::getValue('UNIT_PUBLIC_KEY'))
                 $this->_postErrors[] = $this->l('Необходимо ввести PUBLIC KEY');
@@ -121,6 +125,7 @@ class Unitpay extends PaymentModule
     {
         if (Tools::isSubmit('btnSubmit'))
         {
+            Configuration::updateValue('UNIT_DOMAIN', Tools::getValue('UNIT_DOMAIN'));
             Configuration::updateValue('UNIT_SECRET_KEY', Tools::getValue('UNIT_SECRET_KEY'));
             Configuration::updateValue('UNIT_PUBLIC_KEY', Tools::getValue('UNIT_PUBLIC_KEY'));
         }
@@ -156,6 +161,13 @@ class Unitpay extends PaymentModule
                 'input' => array(
                     array(
                         'type' => 'text',
+                        'label' => $this->l('DOMAIN'),
+                        'desc' => "Вставьте ваш рабочий домен Unitpay",
+                        'name' => 'UNIT_DOMAIN',
+                        'required' => true
+                    ),
+                    array(
+                        'type' => 'text',
                         'label' => $this->l('SECRET KEY'),
                         'desc' => "Скопируйте SECRET KEY со страницы проекта в системе Unitpay",
                         'name' => 'UNIT_SECRET_KEY',
@@ -189,6 +201,7 @@ class Unitpay extends PaymentModule
     public function getConfigFieldsValues()
     {
         return array(
+            'UNIT_DOMAIN'     => Tools::getValue('UNIT_DOMAIN', Configuration::get('UNIT_DOMAIN')),
             'UNIT_SECRET_KEY' => Tools::getValue('UNIT_SECRET_KEY', Configuration::get('UNIT_SECRET_KEY')),
             'UNIT_PUBLIC_KEY' => Tools::getValue('UNIT_PUBLIC_KEY', Configuration::get('UNIT_PUBLIC_KEY')),
         );
