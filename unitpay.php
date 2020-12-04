@@ -11,17 +11,23 @@ class Unitpay extends PaymentModule
     {
         $this->name = 'unitpay';
         $this->tab = 'payments_gateways';
+		$this->controllers = array('payment_process', 'callback');
         $this->version = '1.0.0';
         $this->author = 'Юнитмобайл';
         $this->need_instance = 0;
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
         $this->bootstrap = true;
+		
+		$this->currencies      = true;
+		$this->currencies_mode = 'checkbox';
 
-        parent::__construct();
+		$this->display         = true;
 
-        $this->displayName = $this->l('Модуль UnitPay');
+        $this->displayName = $this->l('UnitPay');
         $this->description = $this->l('Модуль для подключения платежной системы UnitPay');
         $this->confirmUninstall = $this->l('Вы уверены что хотите деинсталлировать модуль?');
+		
+		 parent::__construct();
 
     }
     public function install()
@@ -31,7 +37,9 @@ class Unitpay extends PaymentModule
 
         if (!parent::install() ||
             !$this->registerHook('displayPayment') ||
-            !$this->registerHook('displayHeader') ||
+            !$this->registerHook('paymentOptions') ||
+			!$this->registerHook('paymentReturn') ||
+			!$this->registerHook('displayHeader') ||
             !Configuration::updateValue('UNIT_OS_NEEDPAY', 800)||
             !Configuration::updateValue('UNIT_OS_PAYED', 801)||
             !Configuration::updateValue('UNIT_OS_ERROR_PAY', 802)||
@@ -207,6 +215,67 @@ class Unitpay extends PaymentModule
         );
     }
 
+	/**
+     * Display a message in the paymentReturn hook
+     * 
+     * @param array $params
+     * @return string
+     */
+    public function hookPaymentReturn($params)
+    {
+        /**
+         * Verify if this module is enabled
+         */
+        if (!$this->active) {
+            return;
+        }
+ 
+        return $this->fetch('module:unitpay/views/templates/hook/payment_return.tpl');
+    }
+	
+	public function hookPaymentOptions($params)
+    {
+        /*
+         * Verify if this module is active
+         */
+        if (!$this->active) {
+            return;
+        }
+ 
+        /**
+         * Form action URL. The form data will be sent to the
+         * validation controller when the user finishes
+         * the order process.
+         */
+        $formAction = $this->context->link->getModuleLink($this->name, 'payment_process', array(), true);
+ 
+        /**
+         * Assign the url form action to the template var $action
+         */
+        $this->smarty->assign(['action' => $formAction]);
+ 
+        /**
+         *  Load form template to be displayed in the checkout step
+         */
+        $paymentForm = $this->fetch('module:unitpay/views/templates/hook/payment_options.tpl');
+ 
+        /**
+         * Create a PaymentOption object containing the necessary data
+         * to display this module in the checkout
+         */
+        $newOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption;
+        $newOption->setModuleName($this->displayName)
+            ->setCallToActionText($this->displayName)
+            ->setAction($formAction)
+            ->setForm($paymentForm);
+ 
+        $payment_options = array(
+            $newOption
+        );
+ 
+        return $payment_options;
+    }
+	
     public function hookdisplayPayment()
     {
         return $this->display(__FILE__, 'payment.tpl');

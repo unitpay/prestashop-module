@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module>
+    <name>unitpay</name>
+    <displayName><![CDATA[UnitPay]]></displayName>
+    <version><![CDATA[1.0.0]]></version>
+    <description><![CDATA[Модуль для подключения платежной системы UnitPay]]></description>
+    <author><![CDATA[Юнитмобайл]]></author>
+    <tab><![CDATA[payments_gateways]]></tab>
+	<confirmUninstall><![CDATA[Вы уверены что хотите деинсталлировать модуль?]]></confirmUninstall>
+    <is_configurable>1</is_configurable>
+    <need_instance>0</need_instance>
+	<limited_countries></limited_countries>
+</module>
